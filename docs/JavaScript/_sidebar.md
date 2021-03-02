@@ -1,4 +1,5 @@
 - [变量声明及数据类型](JavaScript/变量声明及数据类型.md)
 - [作用域与原型链](JavaScript/作用域与原型链.md)
 - [this 指向与作用域](JavaScript/this指向与作用域.md)
-- [debounce 和 throttle](JavaScript/debounce和throttle.md)
+- [debounce 和 throttle](JavaScript/debounce和throttle/readme.md)
+- [LazyFunction](JavaScript/LazyFunction.md)
