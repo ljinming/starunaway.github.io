@@ -8,9 +8,6 @@
 
 [1.数据劫持](./Vue/数据劫持/readme.md) -->
 
-- [JavaScript](JavaScript/变量声明及数据类型.md)
-- [Vue.js](Vue/)
-- [React](React/)
-- [Git](git/)
+- [基础配置](git/readme.md)
 
 -
