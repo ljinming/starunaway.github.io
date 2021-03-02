@@ -1,12 +1,7 @@
-let a = {
-  value: 0,
-  valueOf() {
-    console.log(this.value);
-    this.value = this.value + 1;
-    return this.value;
-  },
-};
-
-if (a === 1 && a == 2 && a == 3) {
-  console.log(true);
+// TDZ
+function foo1() {
+  var a = 10;
 }
+foo1();
+
+console.log(a);
