@@ -1,4 +1,5 @@
 - [变量声明及数据类型](JavaScript/变量声明及数据类型/readme.md)
-- [防抖和节流](JavaScript/防抖和节流/readme.md)
 - [LazyFunction](JavaScript/LazyFunction/readme.md)
 - [浅拷贝与深拷贝](JavaScript/浅拷贝与深拷贝/readme.md)
+- [高阶函数](JavaScript/高阶函数/readme.md)
+- [防抖和节流](JavaScript/防抖和节流/readme.md)

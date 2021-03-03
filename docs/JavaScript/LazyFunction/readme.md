@@ -102,7 +102,7 @@ let addEventListener = function (ele, type, func, capture) {
 
 这样每次执行`addEventListener`的时候就会根据当前浏览器环境执行制定的代码进行事件绑定
 
-### 创建应用单列
+### 创建应用单例
 
 ```js
 function Instance() {
