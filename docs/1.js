@@ -1,1 +1,4 @@
-const curry = (fn) => (fn1 = (...args) => (args.length >= fn.length ? fn(...args) : (...arg) => fn1(...args, ...arg)));
+const a = '124124sdafasdgsdag';
+for (let s of a) {
+  console.log(s);
+}
