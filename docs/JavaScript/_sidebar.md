@@ -3,3 +3,4 @@
 - [浅拷贝与深拷贝](JavaScript/浅拷贝与深拷贝/readme.md)
 - [高阶函数](JavaScript/高阶函数/readme.md)
 - [防抖和节流](JavaScript/防抖和节流/readme.md)
+- [发布订阅模式](JavaScript/发布订阅模式/readme.md)
