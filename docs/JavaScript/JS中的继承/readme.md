@@ -97,3 +97,139 @@ a.getSuperName();
 2. 父类的实例属性在子类的原型和实例上均存在，子类原型上的同名属性无法访问，无意义
 
 ![组合继承](./组合继承.png)
+
+## 原型式继承
+
+利用一个对象做媒介，将对象赋值给构造函数的原型
+
+```js
+function create(obj) {
+  function f() {}
+  f.prototype = obj;
+  return new f();
+}
+
+const a = {
+  name: 'a',
+  superName: ['super'],
+};
+
+const b = create(a);
+b.name = 'b';
+b.superName.push('b');
+
+const c = create(a);
+c.name = 'c';
+c.superName.push('C');
+
+console.log(b, c);
+```
+
+缺点：
+
+1. 原型链上的引用类型指向相同，不同实例可以修改同一份数据
+2. 只能添加到原型链上，无法传递父类参数
+
+## 寄生式继承
+
+在原型式继承上新增加一层，可以给实例新增一些方法
+
+```js
+function create(obj) {
+  function f() {}
+  f.prototype = obj;
+  return new f();
+}
+
+// 新增
+function createV2(obj) {
+  const _obj = create(obj);
+  _obj.say = function () {
+    console.log(this.name);
+  };
+  return _obj;
+}
+
+const a = {
+  name: 'a',
+  superName: ['super'],
+};
+
+const b = createV2(a);
+b.name = 'b';
+b.superName.push('b');
+
+const c = createV2(a);
+c.name = 'c';
+c.superName.push('C');
+
+console.log(b, c);
+```
+
+缺点： 和原型式继承一样：
+
+1. 原型链上的引用类型指向相同，不同实例可以修改同一份数据
+2. 只能添加到原型链上，无法传递父类参数
+3. 对每个子实例添加方法属性，不能复用
+
+## 寄生组合式继承
+
+使用一个中间对象作为过渡.子类的原型是一个空对象，而空对象的原型是父类。因此，子类可以访问到父类的属性，而在空对象上添加属性，也不会影响父类。
+
+如果想复用父类构造函数的逻辑，可以在`Sub`内主动调用`Super.call(this)`
+
+```js
+function Super(name) {
+  this.name = name;
+  this.names = name;
+  this.isSuper = true;
+}
+
+Super.prototype.saySuperName = function () {
+  console.log(this.name + 'Super');
+};
+
+function Sub(name) {
+  Super.call(this);
+  this.name = name;
+  this.names = [name];
+}
+
+Sub.prototype.saySubName = function () {
+  console.log(this.name + 'Sub');
+};
+
+function F() {}
+F.prototype = Super.prototype;
+Sub.prototype = new F();
+Sub.prototype.constructor = Sub;
+
+Sub.prototype.sayName = function () {
+  console.log('after inherit');
+};
+const a = new Sub('a');
+a.names.push('aaaaa');
+const b = new Sub('b');
+
+console.log(a, b);
+```
+
+以下是一个继承函数的实现：
+
+```js
+function inherit(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype); //创建父类原型的副本,更新子类的原型
+  subClass.prototype.constructor = subClass; // 把子类的构造函数找回来
+}
+
+inherit(Sub, Super);
+
+Sub.prototype.sayName = function () {
+  console.log('after inherit');
+};
+const a = new Sub('a');
+a.names.push('aaaaa');
+const b = new Sub('b');
+
+console.log(a, b);
+```
