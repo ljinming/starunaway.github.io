@@ -225,6 +225,44 @@ function test() {
 
 解决方法是使用 [`IIFE(Immediately Invoked Function Expression)`](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) 或者使用 `let`
 
+### 总结
+
+JS 引擎一段一段地分析执行，编译后立即执行刚刚编译过的内容。声明优先级，函数 > 变量，同一作用域下存在多个同名函数声明，后面的会替换前面的函数声明。
+
+函数提升
+
+```js
+foo(); // foo2
+function foo() {
+  console.log('foo1');
+}
+
+foo(); // foo2
+
+function foo() {
+  console.log('foo2');
+}
+
+foo(); // foo2
+```
+
+函数优先级 > 变量优先级
+
+```js
+foo(); // foo2
+var foo = function () {
+  console.log('foo1');
+};
+
+foo(); // foo1，foo重新赋值
+
+function foo() {
+  console.log('foo2');
+}
+
+foo(); // foo1
+```
+
 ## 数据类型
 
 - 基本数据类型
@@ -404,7 +442,7 @@ console.log(Object.prototype.toString.call(weakSet)); // [object WeakSet]
 可以完美的获取数据的类型。需要注意的是，`Date()`返回的是字符串，而不是一个日期对象。  
 这种方法明显的看出一个变量是不是包装类(`String`,`Number`,`Boolean`)，需要结合 `typeof`
 
-为什么`Object.prototype.toString.call()`可以获取 `JavaScript` 对象的类型呢？原因在于 `JavaScript`内置了一个 `symbol` [`Symbol.toStringTag`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag),作为对象的一个键使用，其值主要是被`Object.prototype.toString.call()`方法读取，作为其返回值。
+为什么`Object.prototype.toString.call()`可以获取 `JavaScript` 对象的类型呢？原因在于 `JavaScript`内置了一个 `symbol` [`Symbol.toStringTag`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag),作为对象的一个键使用，其值主要是被`Object.prototype.toString`方法读取，作为其返回值。
 
 有些类型可以被 `toString()`直接识别，有些则是因为 `JavaScript` 引擎设置了`Symbol.toStringTag`。
 
