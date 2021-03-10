@@ -12,6 +12,23 @@ function runPromiseSequenceByFor([firstPromise, ...others]) {
   };
 }
 
+function promiseAll(args) {
+  return new Promise(async (resolve, reject) => {
+    const result = [];
+    console.log(args);
+    for (let i = 0; i < args.length; i++) {
+      try {
+        let value = await args[i];
+        result.push(value);
+        console.log(result);
+      } catch (e) {
+        reject(e);
+      }
+    }
+    resolve(result);
+  });
+}
+
 // promise function 1
 function p1(a) {
   return new Promise((resolve, reject) => {
@@ -22,7 +39,7 @@ function p1(a) {
 // promise function 2
 function p2(a) {
   return new Promise((resolve, reject) => {
-    resolve(a * 2);
+    reject(a * 2);
   });
 }
 
@@ -39,4 +56,6 @@ function p4(a) {
 }
 
 const promiseArr = [p1, p2, f3, p4];
-runPromiseSequence1(promiseArr)(10).then(console.log); // 1200
+// runPromiseSequence1(promiseArr)(10).then(console.log); // 1200
+
+promiseAll(promiseArr.map((p) => p(10))).then(console.log);
