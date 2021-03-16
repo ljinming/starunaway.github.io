@@ -18,6 +18,30 @@ function caclMemory(obj) {
   }
 }
 
+let haveCalc = new WeakSet();
+
 function getSizeOfObject(obj) {
+  if (obj === null) {
+    return 0;
+  }
+  let bytes = 0;
   let keys = Object.keys(obj);
+  keys.forEach((key) => {
+    const property = obj[key];
+    bytes += caclMemory(key);
+    if (typeof property === 'object' && property !== null) {
+      if (haveCalc.has(property)) {
+        return;
+      } else {
+        haveCalc.add(property);
+      }
+    }
+    bytes += caclMemory(property);
+  });
+  return bytes;
 }
+
+let a = {
+  keys1: 1,
+};
+console.log(caclMemory({key1: '5', key2: a, key3: a}));

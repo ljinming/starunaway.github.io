@@ -1,12 +1,12 @@
-function test(name) {
-  this.name = name;
+function test() {
   this.say = function () {
-    console.log(this.name);
+    console.log('test this', this);
   };
+  this.state = 5;
 }
 
-let T = new test('jjj');
-T.say();
+// let T = new test('jjj');
+// T.say();
 
 class hook {
   constructor(before, after) {
@@ -39,18 +39,38 @@ class hook {
     let after = this.after;
     backup[key] = function () {
       if (before[key]) {
-        before[key]();
+        before[key].apply(backup);
       }
 
       const result = backup._test[key]();
       if (after[key]) {
-        after[key]();
+        after[key].apply(backup);
       }
 
       return result;
     };
   };
-  overwriteAttributes = (key, backup) => {};
+  overwriteAttributes = (key, backup) => {
+    Object.defineProperty(backup, key, {
+      get: () => {
+        return this['__' + key] || backup._test[key];
+      },
+      set: (value) => {
+        this['__' + key] = val;
+      },
+    });
+  };
+
+  setProterty = (key, backup) => {
+    let obj = Object.create(null);
+    obj.set = (val) => {
+      this['__' + key] = val;
+    };
+    obj.get = () => {
+      return this['__' + key] || backup._test[key];
+    };
+    return obj;
+  };
 }
 
 new hook(
@@ -58,13 +78,14 @@ new hook(
     say() {
       console.log('before say');
       console.log(this);
-      console.log(this.name);
+      console.log(this.state);
       console.log('before say done');
     },
   },
   {
     say() {
       console.log('after say');
+      console.log(this.state);
     },
   }
 );

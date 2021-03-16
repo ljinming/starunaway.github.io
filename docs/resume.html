@@ -14,4 +14,101 @@
   <body>
     it's me
   </body>
+
+  <script>
+    function test() {
+      this.say = function () {
+        console.log('test this', this);
+      };
+      this.state = 5;
+    }
+
+    // let T = new test('jjj');
+    // T.say();
+
+    class hook {
+      constructor(before, after) {
+        this.before = before;
+        this.after = after;
+        this._backup = test;
+        this.init();
+      }
+
+      init = () => {
+        const _this = this;
+        test = function () {
+          this._test = new _this._backup();
+          _this.overwrite(this);
+        };
+      };
+
+      overwrite = (backup) => {
+        for (let k in backup._test) {
+          if (typeof backup._test[k] === 'function') {
+            this.overwriteMethod(k, backup);
+          } else {
+            this.overwriteAttributes(k, backup);
+          }
+        }
+      };
+
+      overwriteMethod = (key, backup) => {
+        let before = this.before;
+        let after = this.after;
+        backup[key] = function () {
+          if (before[key]) {
+            before[key].apply(backup);
+          }
+
+          const result = backup._test[key]();
+          if (after[key]) {
+            after[key].apply(backup);
+          }
+
+          return result;
+        };
+      };
+      overwriteAttributes = (key, backup) => {
+        Object.defineProperty(backup, key, {
+          get: () => {
+            return this['__' + key] || backup._test[key];
+          },
+          set: (value) => {
+            this['__' + key] = val;
+          },
+        });
+      };
+
+      setProterty = (key, backup) => {
+        let obj = Object.create(null);
+        obj.set = (val) => {
+          this['__' + key] = val;
+        };
+        obj.get = () => {
+          return this['__' + key] || backup._test[key];
+        };
+        return obj;
+      };
+    }
+
+    new hook(
+      {
+        say() {
+          console.log('before say');
+          console.log(this);
+          console.log(this.state);
+          console.log('before say done');
+        },
+      },
+      {
+        say() {
+          console.log('after say');
+          console.log(this.state);
+        },
+      }
+    );
+
+    let U = new test('U');
+    U.say();
+  </script>
 </html>

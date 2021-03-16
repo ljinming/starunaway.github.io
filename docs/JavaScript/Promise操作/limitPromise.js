@@ -1,11 +1,16 @@
-function limitPromise(promises, limit) {
+function limitLoad(urls, handle, limit) {
+  let sequence = [...urls];
   limit = limit || Infinity;
-  let sequence = [...promises];
-  let limitArr = sequence.splice(0, limit).map((p, index) => {
-    p();
-    return index;
+  let promises = sequence.splice(0, limit).map((url, index) => {
+    return handle(url).then(() => index);
   });
-  let p = Promise.race(limitArr);
 
-  for (let i = 0; i < sequence.length; i++) {}
+  let p = Promise.race(promises);
+
+  for (let i = 0; i < sequence.length; i++) {
+    p = p.then((index) => {
+      promises[index] = handle(sequence[i]).then(() => index);
+      return Promise.race(promises);
+    });
+  }
 }
