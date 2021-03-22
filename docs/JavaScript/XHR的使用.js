@@ -13,5 +13,7 @@ xhr.send('param=s1&key=s2');
 
 xhr.onreadystatechange = () => {
   if (xhr.readyState === 4 && xhr.status === 200) {
+    let result = xhr.responseText;
+    result = JSON.parse(result);
   }
 };
