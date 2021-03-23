@@ -41,4 +41,54 @@ function limitPromise(tasks, pool = 5) {
   );
 }
 
-limitPromise(tasks, 2).then(console.log).catch(console.log);
+function createRequest(tasks, pool, callback) {
+  if (typeof pool === 'function') {
+    callback = pool;
+    pool = 5;
+  }
+  if (typeof pool !== 'number') {
+    pool = 5;
+  }
+
+  if (typeof callback !== 'function') {
+    callback = () => {};
+  }
+
+  class TaskQueue {
+    running = 0;
+    queue = [];
+    results = [];
+    pushTask(task) {
+      let self = this;
+      self.queue.push(task);
+      self.next();
+    }
+
+    next() {
+      let self = this;
+      while (self.running < pool && self.queue.length) {
+        self.running++;
+        let task = self.queue.shift();
+        task()
+          .then((res) => {
+            self.results.push(res);
+          })
+          .finally(() => {
+            self.running--;
+            self.next();
+          });
+      }
+
+      if (self.running === 0) {
+        callback(self.results);
+      }
+    }
+  }
+
+  let TQ = new TaskQueue();
+  tasks.forEach((task) => TQ.pushTask(task));
+}
+
+createRequest(tasks, 2, (r) => console.log(r));
+
+// limitPromise(tasks, 2).then(console.log).catch(console.log);
