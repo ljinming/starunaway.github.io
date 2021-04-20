@@ -18,7 +18,7 @@ function merge(options, params = {}) {
     let isA = isObject(options[key]);
     let isB = isObject(params[key]);
     if (isA && !isB) {
-      throw new Error('类型不符合');
+      throw new Error('类型不符合: ' + key);
     }
 
     if (isA && isB) {

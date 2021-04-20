@@ -57,9 +57,13 @@ let p = new MyPromise((resolve, reject) => {
   console.log(666666);
 });
 
-// p.then((res) => {
-//   console.log(res);
-//   return 7;
-// }).then((res) => {
-//   console.log(res);
-// });
+p = p.then((res) => {
+  console.log(res);
+  return 7;
+});
+
+console.log('any code ');
+
+p.then((res) => {
+  console.log(res);
+});
